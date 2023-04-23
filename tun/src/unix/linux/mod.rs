@@ -75,6 +75,24 @@ impl TunInterface {
         let addr = unsafe { *(&iff.ifr_ifru.ifru_addr as *const _ as *const sys::sockaddr_in) };
         Ipv4Addr::from(u32::from_be(addr.sin_addr.s_addr))
     }
+    
+    #[throws]
+    pub fn set_ipv6_addr(&self, _addr: Ipv6Addr) {
+        let addr = SockAddr::from(SocketAddrV6::new(addr, 0));
+        
+        let mut iff = self.ifreq()?;
+        iff.ifr_ifru.ifru_addr = unsafe { *addr.as_ptr() };
+        
+        self.perform(|fd| unsafe { sys::if_set_addr(fd, &iff) })?;
+    }
+    
+    #[throws]
+    pub fn ipv6_addr(&self) -> Ipv6Addr {
+        let mut iff = self.ifreq()?;
+        self.perform(|fd| unsafe { sys::if_get_addr(fd, &mut iff) })?;
+        let addr = unsafe { *(&iff.ifr_ifru.ifru_addr as *const _ as *const sys::sockaddr_in6) };
+        Ipv6Addr::from(u32::from_be(addr.sin_addr.s_addr))
+    }
 
     #[throws]
     fn perform<R>(&self, perform: impl FnOnce(RawFd) -> Result<R, nix::Error>) -> R {
