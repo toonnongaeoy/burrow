@@ -78,7 +78,7 @@ impl TunInterface {
     
     #[throws]
     pub fn set_ipv6_addr(&self, addr: Ipv6Addr) {
-        let addr = SockAddr::from(SocketAddrV6::new(addr, 0));
+        let addr = SockAddr::from(SocketAddrV6::new(addr, 0, 0, 0));
         
         let mut iff = self.ifreq()?;
         iff.ifr_ifru.ifru_addr = unsafe { *addr.as_ptr() };
