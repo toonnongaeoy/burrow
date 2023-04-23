@@ -3,6 +3,7 @@ use std::mem::size_of;
 
 pub use libc::ifreq;
 pub use libc::sockaddr_in;
+pub use libc::sockaddr_in6;
 
 ioctl_write_ptr_bad!(
     tun_set_iff,
