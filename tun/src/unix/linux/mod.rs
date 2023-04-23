@@ -91,7 +91,7 @@ impl TunInterface {
         let mut iff = self.ifreq()?;
         self.perform(|fd| unsafe { sys::if_get_addr(fd, &mut iff) })?;
         let addr = unsafe { *(&iff.ifr_ifru.ifru_addr as *const _ as *const sys::sockaddr_in6) };
-        Ipv6Addr::from(u128::from_be(addr.sin_addr.s_addr))
+        Ipv6Addr::from(u128::from_be(addr.sin6_addr.s_addr))
     }
 
     #[throws]
